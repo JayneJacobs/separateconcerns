@@ -1,12 +1,17 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/JayneJacobs/separateconcerns/action"
+	"github.com/JayneJacobs/separateconcerns/business"
+)
 
 func main() {
-	usrstr := accesslayer.NewMemoryUserStorage()
-	usrsrv := businesslayer.NewUserServiceImpl(usrstr)
+	usrstr := action.NewMemoryUserStorage()
+	usrsrv := business.NewUserServiceImpl(usrstr)
 
-	joh :=  accesslayer.NewJsonOverHttp(usrsrv)
+	joh :=  access.NewJsonOverHttp(usrsrv)
 
 	err := http.ListenAndServe(":"+port, joh)
 	if err != nil {

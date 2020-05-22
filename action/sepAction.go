@@ -1,4 +1,4 @@
-package actionlayer
+package action
 
 import (
 	"context"
@@ -6,6 +6,8 @@ import (
 )
 
 // Action Layer
+
+// ErrUserNotFound error 
 var ErrUserNotFound = errors.New("User not found")
 
 // User struct

@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"strings"
+
+	"github.com/JayneJacobs/separateconcerns/action"
 )
 
 // Business Logic
@@ -37,7 +39,7 @@ type UserService interface {
 	// Register may return an ErrEmailExists and error
 	Register(context.Context, *RegisterParams) error
 	// GetByEmail may return an ErrUserNotFound error
-	GetByEmail(context.Context, string) (*access.User, error)
+	GetByEmail(context.Context, string) (*action.User, error)
 }
 
 // ErrEmailExists is an error message
@@ -45,7 +47,7 @@ var ErrEmailExists = errors.New("Email is already in use")
 
 // UserServiceImpl .... s df
 type UserServiceImpl struct {
-	userStorage access.UserStorer
+	userStorage action.UserStorer
 }
 
 // NewUserServiceImpl sldf

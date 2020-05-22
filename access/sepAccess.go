@@ -5,6 +5,9 @@ import (
 	"errors"
 	"net/http"
 	"strings"
+
+	"github.com/JayneJacobs/separateconcerns/action"
+	"github.com/JayneJacobs/separateconcerns/business"
 )
 
 // Access Layer
@@ -28,13 +31,14 @@ func (j *JsonOverHTTP) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	j.router.ServeHTTP(w, r)
 }
 
+// Register
 func (j *JsonOverHTTP) Register(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Register requires a post request", http.StatusMethodNotAllowed)
 		return
 	}
 
-	params := &RegisterParams{}
+	params := &business.RegisterParams{}
 	err := json.NewDecoder(r.Body).Decode(params)
 	if err != nil {
 		http.Error(w, "Unable to read your request", http.StatusBadRequest)
@@ -85,7 +89,7 @@ func (j *JsonOverHTTP) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u, err := j.usrServ.GetByEmail(r.Context(), email)
-	if err == ErrUserNotFound {
+	if err == action.ErrUserNotFound {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	} else if err != nil {
