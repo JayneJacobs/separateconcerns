@@ -1,4 +1,4 @@
-package businesslayer
+package business
 
 import (
 	"context"
@@ -7,11 +7,15 @@ import (
 )
 
 // Business Logic
+
+// RegisterParams struct
 type RegisterParams struct {
 	Email string `json:"email"`
 	Name  string `json:"name"`
 }
 
+
+// Validate takes pointer to RegisterParams and returns error
 func (rp *RegisterParams) Validate() error {
 	if rp.Email == "" {
 		return errors.New("Email cannot be empty")
@@ -28,39 +32,46 @@ func (rp *RegisterParams) Validate() error {
 	return nil
 }
 
+// UserService is an interface requiring Register and GetByEmail methods
 type UserService interface {
-	// Register may return an ErrEmailExists error
+	// Register may return an ErrEmailExists and error
 	Register(context.Context, *RegisterParams) error
 	// GetByEmail may return an ErrUserNotFound error
-	GetByEmail(context.Context, string) (*User, error)
+	GetByEmail(context.Context, string) (*access.User, error)
 }
 
+// ErrEmailExists is an error message
 var ErrEmailExists = errors.New("Email is already in use")
 
+// UserServiceImpl .... s df
 type UserServiceImpl struct {
-	userStorage accesslayer.UserStorer
+	userStorage access.UserStorer
 }
 
-func NewUserServiceImpl(us accesslayer.UserStorer) *UserServiceImpl {
+// NewUserServiceImpl sldf
+func NewUserServiceImpl(us action.UserStorer) *UserServiceImpl {
 	return &UserServiceImpl{
 		userStorage: us,
 	}
 }
 
+// Register ;;;
 func (us *UserServiceImpl) Register(ctx context.Context, params *RegisterParams) error {
 	_, err := us.userStorage.Get(ctx, params.Email)
 	if err == nil {
 		return ErrEmailExists
-	} else if err != ErrUserNotFound {
+	} 
+	if err != action.ErrUserNotFound {
 		return err
 	}
 
-	return us.userStorage.Save(ctx, &User{
+	return us.userStorage.Save(ctx, &action.User{
 		Email: params.Email,
 		Name:  params.Name,
 	})
 }
 
+// GetByEmail get by email
 func (us *UserServiceImpl) GetByEmail(ctx context.Context, email string) (*User, error) {
 	return us.userStorage.Get(ctx, email)
 }

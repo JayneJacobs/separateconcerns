@@ -1,4 +1,4 @@
-package actionlayer
+package access
 
 import (
 	"encoding/json"
@@ -10,10 +10,10 @@ import (
 // Access Layer
 type JsonOverHTTP struct {
 	router  *http.ServeMux
-	usrServ UserService
+	usrServ business.UserService
 }
-
-func NewJsonOverHTTP(usrServ UserService) *JsonOverHTTP {
+//  NewJsonOverHTTP 
+func NewJsonOverHTTP(usrServ business.UserService) *JsonOverHTTP {
 	r := http.NewServeMux()
 	joh := &JsonOverHTTP{
 		router:  r,
