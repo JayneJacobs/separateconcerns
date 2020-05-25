@@ -74,6 +74,6 @@ func (us *UserServiceImpl) Register(ctx context.Context, params *RegisterParams)
 }
 
 // GetByEmail get by email
-func (us *UserServiceImpl) GetByEmail(ctx context.Context, email string) (*User, error) {
+func (us *UserServiceImpl) GetByEmail(ctx context.Context, email string) (*action.User, error) {
 	return us.userStorage.Get(ctx, email)
 }

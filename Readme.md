@@ -30,3 +30,8 @@ Actions are defined as the following:
 - Database interaction
 - logging
 - All backend server functions
+
+
+git tag v0.0.1
+separateconcerns 
+git push --tags

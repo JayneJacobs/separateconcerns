@@ -11,14 +11,16 @@ import (
 )
 
 // Access Layer
-type JsonOverHTTP struct {
+
+// JSONOverHTTP Struct
+type JSONOverHTTP struct {
 	router  *http.ServeMux
 	usrServ business.UserService
 }
-//  NewJsonOverHTTP 
-func NewJsonOverHTTP(usrServ business.UserService) *JsonOverHTTP {
+// NewJSONOverHTTP returns a referece to JSONOverHTTP
+func NewJSONOverHTTP(usrServ business.UserService) *JSONOverHTTP {
 	r := http.NewServeMux()
-	joh := &JsonOverHTTP{
+	joh := &JSONOverHTTP{
 		router:  r,
 		usrServ: usrServ,
 	}
@@ -27,12 +29,12 @@ func NewJsonOverHTTP(usrServ business.UserService) *JsonOverHTTP {
 	return joh
 }
 
-func (j *JsonOverHTTP) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (j *JSONOverHTTP) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	j.router.ServeHTTP(w, r)
 }
 
-// Register
-func (j *JsonOverHTTP) Register(w http.ResponseWriter, r *http.Request) {
+// Register response to a registration request
+func (j *JSONOverHTTP) Register(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Register requires a post request", http.StatusMethodNotAllowed)
 		return
@@ -52,7 +54,7 @@ func (j *JsonOverHTTP) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = j.usrServ.Register(r.Context(), params)
-	if err == ErrEmailExists {
+	if err == business.ErrEmailExists {
 		http.Error(w, err.Error(), http.StatusForbidden)
 		return
 	} else if err != nil {
@@ -63,7 +65,7 @@ func (j *JsonOverHTTP) Register(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (j *JsonOverHTTP) validateEmail(email string) error {
+func (j *JSONOverHTTP) validateEmail(email string) error {
 	if email == "" {
 		return errors.New("Email must not be empty")
 	}
@@ -75,7 +77,8 @@ func (j *JsonOverHTTP) validateEmail(email string) error {
 	return nil
 }
 
-func (j *JsonOverHTTP) GetUser(w http.ResponseWriter, r *http.Request) {
+// GetUser writes a response to a request
+func (j *JSONOverHTTP) GetUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "GetUser requires a get request", http.StatusMethodNotAllowed)
 		return
